@@ -135,11 +135,12 @@ public class ChalangeUtil {
                             default -> "village_plains";
                         };
                         clearWorld(player.getWorld());
-                        teleportToNewStructure(player,player.getWorld());
+
                         Vector3d pos = new Vector3d(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
                         placeStructure((CommandSender) player, structureName, (int) pos.x, (int) pos.y, (int) pos.z
 
                         );
+                        teleportToNewStructure(player,player.getWorld());
                     });
                     initilizeTimer(cooldown);
                     cancel();
