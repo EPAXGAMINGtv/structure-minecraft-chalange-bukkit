@@ -57,14 +57,22 @@ public class ChalangeUtil {
                         int structureY = 100;
                         int structureZ = 0;
 
-                        placeStructure(p, "village_plains", structureX, structureY, structureZ);
 
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                p.teleport(new Location(world, structureX + 0.5, structureY, structureZ + 0.5));
+                                placeStructure(p, "village_plains", structureX, structureY, structureZ);
                             }
-                        }.runTaskLater(plugin, 60L);
+                        }.runTaskLater(plugin, 70L);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                Location center = new Location(world, structureX, structureY, structureZ);
+                                    Location loc =new Location(world,0,110,0);
+                                    p.teleport(loc);
+
+                            }
+                        }.runTaskLater(plugin, 100L);
                         initilizeTimer(180);
                         cancel();
                     }
@@ -125,10 +133,9 @@ public class ChalangeUtil {
                             case 24 -> "witch_hut";
                             default -> "village_plains";
                         };
-                        placeStructure(player, structureName,
-                                (int) Math.floor(player.getX()),
-                                (int) Math.floor(player.getY() + 50),
-                                (int) Math.floor(player.getZ())
+                        Vector3d pos = new Vector3d(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+                        placeStructure((CommandSender) player, structureName, (int) pos.x, (int) pos.y, (int) pos.z
+
                         );
                     });
                     initilizeTimer(cooldown);
@@ -141,4 +148,5 @@ public class ChalangeUtil {
     public static void generateRandomStructure(Player player) {
         player.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
     }
+
 }
