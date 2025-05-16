@@ -1,0 +1,8 @@
+name: Maxeytv
+version: '0.1'
+main: de.epax.maxeytv.Maxeytv
+api-version: '1.21'
+commands:
+  startchalange:
+  stopchalange:
+  generatevoidmap:

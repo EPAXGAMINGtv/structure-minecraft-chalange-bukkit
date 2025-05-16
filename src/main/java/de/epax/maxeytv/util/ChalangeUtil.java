@@ -4,6 +4,7 @@ import de.epax.maxeytv.Maxeytv;
 import de.epax.maxeytv.commands.GenerateVoidMap;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -64,15 +65,15 @@ public class ChalangeUtil {
                                 placeStructure(p, "village_plains", structureX, structureY, structureZ);
                             }
                         }.runTaskLater(plugin, 70L);
+
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                Location center = new Location(world, structureX, structureY, structureZ);
-                                    Location loc =new Location(world,0,110,0);
-                                    p.teleport(loc);
-
+                                Location loc = new Location(world, structureX + 8.5, structureY + 1, structureZ + 8.5); // Mitte mit Offset
+                                teleportToNewStructure(p,world);
                             }
-                        }.runTaskLater(plugin, 100L);
+                        }.runTaskLater(plugin, 140L);
+
                         initilizeTimer(180);
                         cancel();
                     }
@@ -133,6 +134,8 @@ public class ChalangeUtil {
                             case 24 -> "witch_hut";
                             default -> "village_plains";
                         };
+                        clearWorld(player.getWorld());
+                        teleportToNewStructure(player,player.getWorld());
                         Vector3d pos = new Vector3d(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
                         placeStructure((CommandSender) player, structureName, (int) pos.x, (int) pos.y, (int) pos.z
 
@@ -148,5 +151,64 @@ public class ChalangeUtil {
     public static void generateRandomStructure(Player player) {
         player.teleport(plugin.getServer().getWorlds().get(0).getSpawnLocation());
     }
+
+    public static void clearWorld(World world) {
+        int minX = -128;
+        int maxX = 128;
+        int minZ = -128;
+        int maxZ = 128;
+        int minY = world.getMinHeight();
+        int maxY = world.getMaxHeight();
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                for (int y = minY; y <= maxY; y++) {
+                    Block block = world.getBlockAt(x, y, z);
+                    if (block.getType() != Material.AIR) {
+                        block.setType(Material.AIR, false);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void teleportToNewStructure(Player player, World world) {
+        Location spawn = world.getSpawnLocation();
+        int chunkRadius = 10;
+        int minY = world.getMinHeight();
+        int maxY = world.getMaxHeight();
+
+        Location teleportLocation = null;
+
+        outer:
+        for (int chunkX = spawn.getChunk().getX() - chunkRadius; chunkX <= spawn.getChunk().getX() + chunkRadius; chunkX++) {
+            for (int chunkZ = spawn.getChunk().getZ() - chunkRadius; chunkZ <= spawn.getChunk().getZ() + chunkRadius; chunkZ++) {
+                Chunk chunk = world.getChunkAt(chunkX, chunkZ);
+                if (!chunk.isLoaded()) chunk.load();
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        int worldX = chunkX * 16 + x;
+                        int worldZ = chunkZ * 16 + z;
+
+                        for (int y = maxY; y >= minY; y--) {
+                            Block block = world.getBlockAt(worldX, y, worldZ);
+                            if (block.getType().isSolid() && block.getType() != Material.BEDROCK && block.getType() != Material.BARRIER) {
+                                teleportLocation = new Location(world, worldX + 0.5, y + 1, worldZ + 0.5);
+                                break outer;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (teleportLocation != null) {
+            player.teleport(teleportLocation);
+            player.sendMessage("§a» Du wurdest zur Struktur teleportiert.");
+        } else {
+            player.sendMessage("§c» Keine Struktur gefunden im Umkreis von 10 Chunks.");
+        }
+    }
+
+
 
 }
