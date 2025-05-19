@@ -119,13 +119,11 @@ public class ChalangeUtil {
                             case 8 -> "mansion";
                             case 9 -> "mineshaft";
                             case 10 -> "nether_fossil";
-                            case 11 -> "ocean_ruin";
                             case 12 -> "pillager_outpost";
                             case 13 -> "ruined_portal";
                             case 14 -> "shipwreck";
                             case 15 -> "swamp_hut";
                             case 16 -> "stronghold";
-                            case 17, 18 -> "temple";
                             case 19 -> "village_desert";
                             case 20 -> "village_plains";
                             case 21 -> "village_savanna";
@@ -140,6 +138,7 @@ public class ChalangeUtil {
                         placeStructure((CommandSender) player, structureName, (int) pos.x, (int) pos.y, (int) pos.z
 
                         );
+                        clearWorld(player.getWorld());
                         teleportToNewStructure(player,player.getWorld());
                     });
                     initilizeTimer(cooldown);
