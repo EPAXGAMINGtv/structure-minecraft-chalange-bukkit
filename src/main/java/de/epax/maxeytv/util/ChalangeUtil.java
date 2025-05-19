@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.structure.Structure;
 import org.joml.Vector3d;
 
+import java.io.File;
 import java.util.Random;
 import java.util.Vector;
 
@@ -212,6 +213,47 @@ public class ChalangeUtil {
             player.sendMessage("§c» Keine Struktur gefunden im Umkreis von 10 Chunks.");
         }
     }
+
+    public static void restartChalange() {
+        String worldName = "voidworld";
+        World world = Bukkit.getWorld(worldName);
+
+        if (world != null) {
+            Bukkit.unloadWorld(world, false);
+        }
+
+        File worldFolder = new File(Bukkit.getServer().getWorldContainer(), worldName);
+
+        if (worldFolder.exists()) {
+            boolean success = deleteDirectory(worldFolder);
+            if (success) {
+                System.out.println("Welt '" + worldName + "' erfolgreich gelöscht.");
+                Bukkit.restart();
+            } else {
+                System.out.println("Fehler beim Löschen der Welt '" + worldName + "'.");
+            }
+        } else {
+            System.out.println("Welt '" + worldName + "' existiert nicht.");
+        }
+    }
+
+    public static boolean deleteDirectory(File dir) {
+        if (!dir.exists()) return true;
+
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    if (!deleteDirectory(file)) return false;
+                } else {
+                    if (!file.delete()) return false;
+                }
+            }
+        }
+
+        return dir.delete();
+    }
+
 
 
 
