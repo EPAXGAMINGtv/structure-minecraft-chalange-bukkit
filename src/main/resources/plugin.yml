@@ -6,3 +6,6 @@ commands:
   startchalange:
   stopchalange:
   generatevoidmap:
+  clearvoidworld:
+  chalangehelp:
+  credits:

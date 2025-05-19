@@ -1,8 +1,6 @@
 package de.epax.maxeytv;
 
-import de.epax.maxeytv.commands.GenerateVoidMap;
-import de.epax.maxeytv.commands.startchalangeCommand;
-import de.epax.maxeytv.commands.stopChalange;
+import de.epax.maxeytv.commands.*;
 import de.epax.maxeytv.listener.OnPlayerDethEvent;
 import de.epax.maxeytv.util.ChalangeUtil;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,6 +14,9 @@ public final class Maxeytv extends JavaPlugin {
         getCommand("startchalange").setExecutor(new startchalangeCommand());
         getCommand("stopchalange").setExecutor(new stopChalange());
         getCommand("generatevoidmap").setExecutor(new GenerateVoidMap());
+        getCommand("clearvoidworld").setExecutor(new clearVoidWorld());
+        getCommand("credits").setExecutor(new credits());
+        getCommand("chalangehelp").setExecutor(new help());
 
         getServer().getPluginManager().registerEvents(new OnPlayerDethEvent(), this);
 

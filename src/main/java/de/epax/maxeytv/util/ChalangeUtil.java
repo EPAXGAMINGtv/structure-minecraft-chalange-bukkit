@@ -39,6 +39,7 @@ public class ChalangeUtil {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.sendTitle("§e" + seconds, "§7Spiel startet gleich...", 0, 20, 0);
                         player.sendMessage("§7» §e" + seconds + " Sekunden bis zum Start!");
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
                     }
                     seconds--;
                 } else {
@@ -132,14 +133,14 @@ public class ChalangeUtil {
                             case 24 -> "witch_hut";
                             default -> "village_plains";
                         };
-                        clearWorld(player.getWorld());
-
-                        Vector3d pos = new Vector3d(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
-                        placeStructure((CommandSender) player, structureName, (int) pos.x, (int) pos.y, (int) pos.z
-
-                        );
-                        clearWorld(player.getWorld());
-                        teleportToNewStructure(player,player.getWorld());
+                        if (player.getWorld().equals("voidworld")) {
+                            clearWorld(player.getWorld());
+                            Vector3d pos = new Vector3d(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+                            placeStructure((CommandSender) player, structureName, (int) pos.x, (int) pos.y, (int) pos.z
+                            );
+                            player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
+                            teleportToNewStructure(player,player.getWorld());
+                        }
                     });
                     initilizeTimer(cooldown);
                     cancel();
@@ -153,23 +154,26 @@ public class ChalangeUtil {
     }
 
     public static void clearWorld(World world) {
-        int minX = -128;
-        int maxX = 128;
-        int minZ = -128;
-        int maxZ = 128;
         int minY = world.getMinHeight();
         int maxY = world.getMaxHeight();
-        for (int x = minX; x <= maxX; x++) {
-            for (int z = minZ; z <= maxZ; z++) {
-                for (int y = minY; y <= maxY; y++) {
-                    Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() != Material.AIR) {
-                        block.setType(Material.AIR, false);
+
+        for (Chunk chunk : world.getLoadedChunks()) {
+            int chunkMinX = chunk.getX() << 4;
+            int chunkMinZ = chunk.getZ() << 4;
+
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    for (int y = minY; y < maxY; y++) {
+                        Block block = world.getBlockAt(chunkMinX + x, y, chunkMinZ + z);
+                        if (block.getType() != Material.AIR) {
+                            block.setType(Material.AIR, false);
+                        }
                     }
                 }
             }
         }
     }
+
 
     public static void teleportToNewStructure(Player player, World world) {
         Location spawn = world.getSpawnLocation();

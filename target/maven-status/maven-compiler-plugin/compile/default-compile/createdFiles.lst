@@ -3,9 +3,12 @@ de\epax\maxeytv\util\VoidMapGeneratorUtil.class
 de\epax\maxeytv\util\ChalangeUtil$2.class
 de\epax\maxeytv\util\ChalangeUtil$1.class
 de\epax\maxeytv\commands\startchalangeCommand.class
+de\epax\maxeytv\commands\help.class
 de\epax\maxeytv\listener\OnPlayerDethEvent.class
 de\epax\maxeytv\commands\stopChalange.class
 de\epax\maxeytv\util\ChalangeUtil$1$2.class
+de\epax\maxeytv\commands\clearVoidWorld.class
+de\epax\maxeytv\commands\credits.class
 de\epax\maxeytv\commands\GenerateVoidMap.class
 de\epax\maxeytv\util\ChalangeUtil$1$1.class
 de\epax\maxeytv\util\ChalangeUtil.class
