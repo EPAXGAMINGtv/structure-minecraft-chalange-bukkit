@@ -60,22 +60,22 @@ public class ChalangeUtil {
                         int structureY = 100;
                         int structureZ = 0;
 
+                        if (p.getWorld().equals(world)) {
+                            p.teleport(new Location(world, 0.5, 300, 0.5));
+                            new BukkitRunnable() {
 
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                placeStructure(p, "village_plains", structureX, structureY, structureZ);
-                            }
-                        }.runTaskLater(plugin, 70L);
+                                @Override
+                                public void run() {
+                                    placeStructure(p, "village_plains", structureX, structureY, structureZ);
+                                    Location loc = new Location(world, structureX + 8.5, structureY + 1, structureZ + 8.5); // Mitte mit Offset
+                                    teleportToNewStructure(p,world);
+                                }
+                            }.runTaskLater(plugin, 40);
 
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                Location loc = new Location(world, structureX + 8.5, structureY + 1, structureZ + 8.5); // Mitte mit Offset
-                                teleportToNewStructure(p,world);
-                            }
-                        }.runTaskLater(plugin, 140L);
-
+                        }else {
+                            makestartTimer(p);
+                            return;
+                        }
                         initilizeTimer(180);
                         cancel();
                     }
@@ -95,7 +95,6 @@ public class ChalangeUtil {
         }
         new BukkitRunnable() {
             int timeLeft = cooldown;
-
             @Override
             public void run() {
                 if (timeLeft > 0) {
@@ -134,13 +133,13 @@ public class ChalangeUtil {
                             case 24 -> "witch_hut";
                             default -> "village_plains";
                         };
-                        if (player.getWorld().equals("voidworld")) {
+                        if (player.getWorld().getName().equals("voidworld")) {
                             clearWorld(player.getWorld());
                             Vector3d pos = new Vector3d(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
                             placeStructure((CommandSender) player, structureName, (int) pos.x, (int) pos.y, (int) pos.z
                             );
                             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
-                            teleportToNewStructure(player,player.getWorld());
+                            teleportToNewStructure(player, player.getWorld());
                         }
                     });
                     initilizeTimer(cooldown);

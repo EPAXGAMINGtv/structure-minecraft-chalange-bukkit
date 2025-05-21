@@ -17,6 +17,7 @@ public final class Maxeytv extends JavaPlugin {
         getCommand("clearvoidworld").setExecutor(new clearVoidWorld());
         getCommand("credits").setExecutor(new credits());
         getCommand("chalangehelp").setExecutor(new help());
+        getCommand("restartchalange").setExecutor(new restartchalange());
 
         getServer().getPluginManager().registerEvents(new OnPlayerDethEvent(), this);
 
